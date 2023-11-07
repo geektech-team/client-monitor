@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    (function (w) {
+      w._error_storage_ = [];
+      function errorhandler() {
+        // 用于记录当前的错误
+        w._error_storage_ && w._error_storage_.push([].slice.call(arguments));
+      }
+      w.addEventListener && w.addEventListener("error", errorhandler, true);
+      var times = 3,
+        appendScript = function appendScript() {
+          var sc = document.createElement("script");
+          sc.async = true;
+          sc.src = './build/skyeye.js';  // 取决于你存放的位置
+          sc.crossOrigin = "anonymous";
+          sc.onerror = function () {
+            times--,
+              times > 0 && setTimeout(appendScript, 1500)
+          };
+          document.head && document.head.appendChild(sc);
+        };
+      setTimeout(appendScript, 1500);
+    })(window);
+    (function (i, s, o, g, r, a, m) { i["RangerSiteSDKObject"] = r; (i[r] = i[r] || function () { (i[r].q = i[r].q || []).push(arguments) }), (i[r].l = 1 * new Date()); (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]); a.async = 1; a.src = g; a.crossOrigin = "anonymous"; m.parentNode.insertBefore(a, m); i[r].globalPreCollectError = function () { i[r]("precollect", "error", arguments) }; if (typeof i.addEventListener === "function") { i.addEventListener("error", i[r].globalPreCollectError, true); i.addEventListener('unhandledrejection', i[r].globalPreCollectError) } if ('PerformanceLongTaskTiming' in i) { var g = i[r].lt = { e: [] }; g.o = new PerformanceObserver(function (l) { g.e = g.e.concat(l.getEntries()) }); g.o.observe({ entryTypes: ['longtask'] }) } })(window, document, "script", "{{你的CDN地址}}", "RangersSiteSDK");
+    window.RangersSiteSDK("config", {
+
+      app_id: {{ 你的app_id }},
+
+      serverDomain: {{ 私有化部署服务器地址 }},
+
+    });
+  </script>
+</head>
+
+<body>
+  <h1>这是一个测试页面</h1>
+</body>
+
+</html>
