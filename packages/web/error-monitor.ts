@@ -5,8 +5,8 @@ import { ErrorType } from '../../core/error';
 export class WebErrorMonitor implements ErrorMonitor {
   constructor(public tracker: Tracker) {
     this.catchJavascriptError();
-    this.catchJavascriptError();
-    this.catchJavascriptError();
+    this.catchResourceError();
+    this.catchPromiseError();
   }
 
   catchJavascriptError() {
@@ -31,15 +31,13 @@ export class WebErrorMonitor implements ErrorMonitor {
   catchResourceError() {
     window.addEventListener(
       'error',
-      event => {
+      (event: ErrorEvent) => {
         // 有 e.target.src(href) 的认定为资源加载错误
         if (this.isResourceError(event)) {
           this.tracker.send({
             // 资源加载错误
             type: 'error', // resource
             errorType: ErrorType.ResourceError,
-            filename: event.target?.src || event.target?.href, // 加载失败的资源
-            tagName: event.target?.tagName, // 标签名
             timeStamp: event.timeStamp, // 时间
           });
         }
@@ -91,7 +89,7 @@ export class WebErrorMonitor implements ErrorMonitor {
 
   isResourceError(event: Event) {
     // 有 e.target.src(href) 的认定为资源加载错误
-    return event.target && (event.target.src || event.target.href);
+    return event.target && ('src' in event.target || 'href' in event.target);
   }
 
   getLines(stack: string) {

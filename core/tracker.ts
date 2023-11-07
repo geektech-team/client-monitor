@@ -2,7 +2,7 @@ const request = (function() {
   if (window.navigator.sendBeacon) {
     return window.navigator.sendBeacon.bind(window.navigator);
   }
-  const requestImage = function(url, dataString) {
+  const requestImage = function(url: string, dataString: string) {
     const img = new Image();
     img.src = `${url}.gif?data=${encodeURIComponent(dataString)}`;
   };

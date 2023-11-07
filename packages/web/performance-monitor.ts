@@ -4,7 +4,6 @@ import { getPageURL } from './utils';
 
 export class WebPerformanceMonitor implements PerformanceMonitor {
   constructor(public tracker: Tracker) {
-    this.observeFirstPaint();
     this.observeFirstContentfulPaint();
     this.observeLargestContentfulPaint();
   }
@@ -18,7 +17,7 @@ export class WebPerformanceMonitor implements PerformanceMonitor {
   observeFirstContentfulPaint() {
     if (!this.isSupportPerformanceObserver()) return;
 
-    const entryHandler = list => {
+    const observer = new PerformanceObserver((list: PerformanceObserverEntryList) => {
       for (const entry of list.getEntries()) {
         if (entry.name === 'first-contentful-paint') {
           observer.disconnect();
@@ -36,9 +35,7 @@ export class WebPerformanceMonitor implements PerformanceMonitor {
 
         this.tracker.send(reportData);
       }
-    };
-
-    const observer = new PerformanceObserver(entryHandler);
+    });
     // buffered 属性表示是否观察缓存数据，也就是说观察代码添加时机比事情触发时机晚也没关系。
 
     observer.observe({ type: 'paint', buffered: true });
@@ -63,7 +60,6 @@ export class WebPerformanceMonitor implements PerformanceMonitor {
 
         const reportData = {
           ...json,
-          target: entry.element?.tagName,
           name: entry.entryType,
           subType: entry.entryType,
           type: 'performance',
